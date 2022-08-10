@@ -1,7 +1,7 @@
 /*
  * @Author: Galen Tong
  * @Date: 2022-08-02 23:39:31
- * @LastEditTime: 2022-08-04 22:24:12
+ * @LastEditTime: 2022-08-09 23:00:33
  * @Description:
  */
 import Vue from "vue";
@@ -16,6 +16,11 @@ const router = new VueRouter({
 			path: "/login",
 			name: "Login",
 			component: () => import("../views/Login.vue"),
+		},
+		{
+			path: "/registry",
+			name: "Registry",
+			component: () => import("../views/Registry.vue"),
 		},
 		{
 			path: "/",

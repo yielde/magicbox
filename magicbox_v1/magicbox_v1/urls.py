@@ -1,7 +1,7 @@
 '''
 Author: Galen Tong
 Date: 2022-08-01 22:27:23
-LastEditTime: 2022-08-08 13:50:29
+LastEditTime: 2022-08-09 23:10:22
 Description: 
 '''
 """magicbox_v1 URL Configuration
@@ -19,8 +19,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path, include
 
+from django.urls import path, include
 urlpatterns = [
-    path('api/account/', include('apps.account.urls')),
+    path('api/', include('apps.account.urls')),
 ]

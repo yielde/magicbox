@@ -4,6 +4,7 @@
         "name": "Django",
         "type": "python",
         "request": "launch",
+        "python.pythonPath": "/home/galen/MYCODE/python/mtbao/venv/bin/python3",
         "program": "${workspaceFolder}/manage.py",
         "args": ["runserver", "0.0.0.0:8888", "--noreload"],
         "django": true,
