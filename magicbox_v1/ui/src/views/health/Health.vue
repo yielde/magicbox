@@ -1,7 +1,7 @@
 <!--
  * @Author: Galen Tong
  * @Date: 2022-08-04 22:16:32
- * @LastEditTime: 2022-08-07 21:52:10
+ * @LastEditTime: 2022-08-14 14:20:34
  * @Description: 
 -->
 <template>
@@ -51,22 +51,22 @@
 						style="width: 100%"
 						highlight-current-row
 						:default-sort="{
-							prop: 'healthTime',
+							prop: 'time',
 							order: 'descending',
 						}"
 					>
+						<el-table-column label="ID" prop="id" v-if="false">
+						</el-table-column>
 						<el-table-column type="index" label="序号">
 						</el-table-column>
-						<el-table-column
-							prop="healthTime"
-							label="时间"
-							sortable
-						>
+						<el-table-column prop="time" label="时间" sortable>
 							<template slot-scope="scope">
 								<span v-if="scope.row.isEdit">
 									<el-date-picker
-										v-model="currentData['healthTime']"
+										v-model="currentData['time']"
 										type="datetime"
+										format="yyyy-MM-dd HH:mm:ss"
+										value-format="yyyy-MM-dd HH:mm:ss"
 										placeholder="选择日期时间"
 										align="right"
 										:picker-options="pickerOptions"
@@ -74,30 +74,26 @@
 									</el-date-picker>
 								</span>
 								<span v-else>
-									{{
-										scope.row.healthTime
-											.replace("T", " ")
-											.replace("Z", "")
-									}}
+									{{ scope.row.time }}
 								</span>
 							</template>
 						</el-table-column>
 
 						<el-table-column
-							prop="detail"
+							prop="health_detail"
 							label="详细信息"
 							sortable
 						>
 							<template slot-scope="scope">
 								<span v-if="scope.row.isEdit">
 									<el-input
-										v-model="currentData['detail']"
+										v-model="currentData['health_detail']"
 										placeholder="输入内容"
 									>
 									</el-input>
 								</span>
 								<span v-else>
-									{{ scope.row.detail }}
+									{{ scope.row.health_detail }}
 								</span>
 							</template>
 						</el-table-column>
@@ -123,19 +119,19 @@
 										</el-option>
 									</el-select>
 								</span>
-								<span v-else>
+								<span v-else style="border: 0px; padding: 0px">
 									<el-tag
-										v-if="scope.row.text === 0"
+										v-if="scope.row.text === 1"
 										type="success"
 										>{{ showTag(scope.row.text) }}</el-tag
 									>
 									<el-tag
-										v-else-if="scope.row.text === 1"
+										v-else-if="scope.row.text === 2"
 										type="warning"
 										>{{ showTag(scope.row.text) }}</el-tag
 									>
 									<el-tag
-										v-else-if="scope.row.text === 2"
+										v-else-if="scope.row.text === 3"
 										type="danger"
 										>{{ showTag(scope.row.text) }}</el-tag
 									>
@@ -199,45 +195,26 @@
 </template>
 
 <script>
-	var healthdata = [
-		{
-			id: 1,
-			healthTime: "2022-1-1",
-			detail: "疼得不厉害",
-			text: 0,
-		},
-		{
-			id: 2,
-			healthTime: "2022-2-1",
-			detail: "疼得厉害",
-			text: 1,
-		},
-		{
-			id: 3,
-			healthTime: "2022-3-1",
-			detail: "不疼",
-			text: 2,
-		},
-	];
-	// var healthdata = []
 	export default {
 		name: "Health",
 
 		data() {
 			return {
+				default_time: null,
 				searchForm: {
 					title: "",
 					category: "",
 					dateValue: "",
 				},
 				selectItem: [
-					{ text: "微痛", value: 0 },
-					{ text: "中痛", value: 1 },
-					{ text: "重痛", value: 2 },
+					{ text: "轻微", value: 1 },
+					{ text: "中等", value: 2 },
+					{ text: "严重", value: 3 },
 				],
 				healthColumns: [
-					{ prop: "healthTime", label: "时间" },
-					{ prop: "detail", label: "详细信息" },
+					{ prop: "id", label: "ID" },
+					{ prop: "time", label: "时间" },
+					{ prop: "health_detail", label: "详细信息" },
 					{ prop: "text", label: "标签" },
 				],
 				healthData: [],
@@ -273,11 +250,20 @@
 		},
 		methods: {
 			init() {
-				healthdata.forEach((row) => {
-					row.isEdit = false;
+				const loading = this.$loading();
+				this.axios.get("/health/").then((res) => {
+					loading.close();
+					if (res.data.code === 0) {
+						res.data.data.forEach((row) => {
+							row.isEdit = false;
+						});
+						this.healthData = res.data.data;
+					} else {
+						this.$message.error("请求失败");
+					}
 				});
-				this.healthData = healthdata;
 			},
+
 			filterTag(value, row) {
 				return row.text === value;
 			},
@@ -287,22 +273,19 @@
 			resetSearchForm(formName) {
 				this.$refs[formName].resetFields();
 			},
-			//读取表格数据
-
-			//添加账号
 			addHealthInfo() {
 				for (let i of this.healthData) {
 					if (i.isEdit)
 						return this.$message.warning("请先保存当前编辑项");
 				}
 				let j = {
-					healthTime: "",
-					detail: "",
+					id: null,
+					time: "",
+					health_detail: "",
 					text: "",
 				};
 				let k = j;
-				k.isEdit = true;
-
+				j.isEdit = true;
 				this.healthData.push(j);
 				this.currentData = JSON.parse(JSON.stringify(k));
 			},
@@ -329,20 +312,91 @@
 				}
 				//提交数据
 				if (row.isEdit) {
-					//项目是模拟请求操作  自己修改下
-					let data = JSON.parse(JSON.stringify(this.currentData));
-					for (let k in data) {
-						row[k] = data[k];
+					if (this.currentData["time"] === "") {
+						this.currentData["time"] = jutils.formatDate(
+							new Date(),
+							"YYYY-MM-DD HH:ii:ss"
+						);
 					}
-					this.$message({
-						type: "success",
-						message: "保存成功!",
-					});
-					//然后这边重新读取表格数据
-					// this.readMasterUser();
+					let data = JSON.parse(JSON.stringify(this.currentData));
+					if (!data.id) {
+						this.axios.post("/health/", data).then((res) => {
+							console.log(data);
+							if (res.data.code === 0) {
+								this.$message({
+									type: "success",
+									message: "保存成功!",
+								});
+								res.data.data.isEdit = false;
+								for (let k in res.data.data) {
+									row[k] = res.data.data[k];
+								}
+								return;
+							}
+							if (res.data.code === 1001) {
+								let offset = 0;
+								console.log(res.data);
+								for (let i in res.data.detail) {
+									for (let j of res.data.detail[i]) {
+										this.$message({
+											message: j,
+											type: "error",
+											center: true,
+											offset: offset * 60,
+											showClose: true,
+											duration: 2000,
+										});
+										offset += 1;
+									}
+								}
+								this.init();
+								return;
+							} else {
+								this.$message.error("请求错误");
+							}
+						});
+					} else {
+						this.axios.put(`/health/${data.id}/`, data).then((res) => {
+							if (res.data.code === 0) {
+								this.$message({
+									type: "success",
+									message: "保存成功!",
+								});
+								res.data.data.isEdit = false;
+								for (let k in res.data.data) {
+									row[k] = res.data.data[k];
+								}
+								return;
+							}
+							if (res.data.code === 1001) {
+								let offset = 0;
+								for (let i in res.data.detail) {
+									for (let j of res.data.detail[i]) {
+										this.$message({
+											message: j,
+											type: "error",
+											center: true,
+											offset: offset * 60,
+											showClose: true,
+											duration: 2000,
+										});
+										offset += 1;
+									}
+								}
+								return;
+							} else {
+								this.$message.error("请求错误");
+							}
+						});
+					}
+
 					row.isEdit = false;
 				} else {
 					this.currentData = JSON.parse(JSON.stringify(row));
+					this.currentData["time"] = jutils.formatDate(
+						new Date(this.currentData["time"]),
+						"YYYY-MM-DD HH:ii:ss"
+					);
 					row.isEdit = true;
 				}
 			},
@@ -353,22 +407,41 @@
 						return false;
 					}
 				}
+				this.currentData = JSON.parse(JSON.stringify(row));
 				// 删除
 				this.$confirm("确认删除选中记录吗？", "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
 					type: "warning",
-				})
-					.then(() => {
-						this.healthData.forEach((v, i) => {
-							if (JSON.stringify(row) === JSON.stringify(v)) {
-								var deleted = this.healthData.splice(i, 1);
-								console.log("已删除", deleted);
-								return;
-							}
-						});
-					})
-					.catch(() => {
-						console.log("已取消");
-					});
+				}).then(() => {
+						this.axios
+							.delete(`/health/${this.currentData.id}/`)
+							.then((res) => {
+                                console.log(res.data)
+								if (res.data.code === 0) {
+									this.$message({
+										type: "success",
+										message: res.data.data,
+									});
+                                    this.init();
+									return;
+								}
+								if (res.data.code === 2001) {
+									this.$message({
+										type: "error",
+										message: res.data.detail,
+									});
+                                    this.init();
+									return;
+								} else {
+									this.$message.error("请求错误");
+                                    this.init();
+								}
+							});
+					}).catch(()=>{
+                        this.$message.warning("取消删除")
+                    })
+
 			},
 			showTag(tagValue) {
 				for (let item of this.selectItem) {
@@ -378,9 +451,10 @@
 				}
 			},
 		},
-		mounted() {
+		created() {
 			this.init();
 		},
+		mounted() {},
 	};
 </script>
 

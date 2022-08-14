@@ -1,7 +1,7 @@
 '''
 Author: Galen Tong
 Date: 2022-08-08 11:37:52
-LastEditTime: 2022-08-08 11:46:24
+LastEditTime: 2022-08-14 13:29:04
 Description: 
 '''
 SUCCESS = 0
@@ -9,3 +9,5 @@ SUCCESS = 0
 FIELD_ERROR = 1000
 
 VALIDATE_ERROR = 1001
+
+OPERATE_ERROR = 2001

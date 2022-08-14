@@ -1,7 +1,7 @@
 '''
 Author: Galen Tong
 Date: 2022-08-01 22:27:23
-LastEditTime: 2022-08-09 23:10:22
+LastEditTime: 2022-08-11 13:47:58
 Description: 
 '''
 """magicbox_v1 URL Configuration
@@ -23,4 +23,5 @@ Including another URLconf
 from django.urls import path, include
 urlpatterns = [
     path('api/', include('apps.account.urls')),
+    path('api/health/', include('apps.health.urls'))
 ]

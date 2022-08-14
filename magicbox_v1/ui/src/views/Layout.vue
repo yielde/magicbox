@@ -1,7 +1,7 @@
 <!--
  * @Author: Galen Tong
  * @Date: 2022-08-04 22:04:24
- * @LastEditTime: 2022-08-10 21:47:20
+ * @LastEditTime: 2022-08-11 14:35:57
  * @Description: 
 -->
 <template>
@@ -50,7 +50,6 @@
 			};
 		},
 		mounted() {
-			console.log(this.$route.matched[1]);
 			this.rootActiveRouter = this.$route.matched[1].name;
 		},
 		computed: {
@@ -60,10 +59,10 @@
 		},
 		methods: {
 			logout() {
-                this.$store.commit("logout");
-                this.$router.push("Login");
-                return
-            },
+				this.$store.commit("logout");
+				this.$router.push("Login");
+				return;
+			},
 		},
 	};
 </script>

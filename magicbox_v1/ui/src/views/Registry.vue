@@ -1,7 +1,7 @@
 <!--
  * @Author: Galen Tong
  * @Date: 2022-08-09 22:06:26
- * @LastEditTime: 2022-08-10 22:40:10
+ * @LastEditTime: 2022-08-11 23:41:49
  * @Description: 
 -->
 <template>
@@ -163,6 +163,7 @@
 									});
 									offset += 1;
 								}
+                            return;
 							}
 						} else {
 							this.$message.error("请求失败");

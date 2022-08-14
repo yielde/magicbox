@@ -1,7 +1,7 @@
 '''
 Author: Galen Tong
 Date: 2022-08-08 10:42:40
-LastEditTime: 2022-08-09 15:19:07
+LastEditTime: 2022-08-11 21:23:33
 Description: 
 '''
 from rest_framework.views import APIView
@@ -40,5 +40,4 @@ class RegistryView(mixins.MagicboxCreateModelMixin, GenericViewSet):
     serializer_class = RegistrySerializer
 
     def perform_create(self, serializer):
-        serializer.validated_data.pop('confirm_password')
-        serializer.save()
+        serializer.save(magicbox_user_id=self.request.user.user_id)
