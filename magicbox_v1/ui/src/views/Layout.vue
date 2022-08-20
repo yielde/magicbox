@@ -1,7 +1,7 @@
 <!--
  * @Author: Galen Tong
  * @Date: 2022-08-04 22:04:24
- * @LastEditTime: 2022-08-11 14:35:57
+ * @LastEditTime: 2022-08-20 18:01:10
  * @Description: 
 -->
 <template>
@@ -17,7 +17,8 @@
 				router
 			>
 				<el-menu-item>MagicBox</el-menu-item>
-				<el-menu-item index="Health" :route="{ name: 'Health' }"
+
+				<el-menu-item index="HealthLayout" :route="{ name: 'Health' }"
 					>健康记录</el-menu-item
 				>
 				<el-menu-item index="Tools" :route="{ name: 'Tools' }"

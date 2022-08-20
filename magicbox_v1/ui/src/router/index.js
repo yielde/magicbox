@@ -1,7 +1,7 @@
 /*
  * @Author: Galen Tong
  * @Date: 2022-08-02 23:39:31
- * @LastEditTime: 2022-08-09 23:00:33
+ * @LastEditTime: 2022-08-20 17:53:40
  * @Description:
  */
 import Vue from "vue";
@@ -28,13 +28,29 @@ const router = new VueRouter({
 			component: () => import("../views/Layout.vue"),
 			children: [
 				{
-					path: "",
-					redirect: "health",
+					path: "/",
+					redirect: "healthlayout",
 				},
 				{
-					path: "health",
-					name: "Health",
-					component: () => import("../views/health/Health.vue"),
+					path: "healthlayout",
+					name: "HealthLayout",
+					component: () => import("../views/health/HealthLayout.vue"),
+                    children:[
+                        {
+                            path:"/",
+                            redirect:"health"
+                        },
+                        {
+                            path:"health",
+                            name:"Health",
+                            component:()=> import("../views/health/Health.vue")
+                        },
+                        {
+                            path:"stastic",
+                            name:"Stastic",
+                            component:()=> import("../views/health/Stastic.vue")
+                        }
+                    ]
 				},
 				{
 					path: "tools",
