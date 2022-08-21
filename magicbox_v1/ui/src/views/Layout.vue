@@ -1,7 +1,7 @@
 <!--
  * @Author: Galen Tong
  * @Date: 2022-08-04 22:04:24
- * @LastEditTime: 2022-08-20 18:01:10
+ * @LastEditTime: 2022-08-20 21:07:34
  * @Description: 
 -->
 <template>
@@ -16,7 +16,7 @@
 				active-text-color="#ffd04b"
 				router
 			>
-				<el-menu-item>MagicBox</el-menu-item>
+				<el-menu-item @click="toIndex()">MagicBox</el-menu-item>
 
 				<el-menu-item index="HealthLayout" :route="{ name: 'Health' }"
 					>健康记录</el-menu-item
@@ -64,6 +64,9 @@
 				this.$router.push("Login");
 				return;
 			},
+            toIndex() {
+                this.$router.push("/healthlayout/health")
+            }
 		},
 	};
 </script>

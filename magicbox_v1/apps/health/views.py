@@ -1,7 +1,7 @@
 '''
 Author: Galen Tong
 Date: 2022-08-08 10:32:29
-LastEditTime: 2022-08-19 17:41:30
+LastEditTime: 2022-08-20 19:01:47
 Description:
 '''
 import time
@@ -31,7 +31,9 @@ class HealthStastics(APIView):
     def get(self, request, *args, **kwargs):
         queryset = models.HealthInfo.objects.all().order_by("time")
         ser = HealthListSerializers(queryset, many=True)
-        response_data = []
+        response_data = {}
+        axis_key = []
+        axis_value = []
         days = 0
         First = True
         for item in ser.data:
@@ -42,8 +44,10 @@ class HealthStastics(APIView):
                 pre_date = next_date
                 First = False
             days = round((next_date - pre_date) / 3600 / 24)
-            print(next_date, "=====", days)
-            response_data.append({date_key.split("T")[0]: days})
+            axis_key.append(date_key.split("T")[0])
+            axis_value.append(days)
             pre_date = next_date
-
+        response_data["axis_key"] = axis_key
+        response_data["axis_value"] = axis_value
+        
         return Response({"code": return_code.SUCCESS, "data": response_data})

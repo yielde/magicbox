@@ -1,7 +1,7 @@
 <!--
  * @Author: Galen Tong
  * @Date: 2022-08-04 22:16:32
- * @LastEditTime: 2022-08-14 16:57:54
+ * @LastEditTime: 2022-08-20 20:50:17
  * @Description: 
 -->
 <template>
@@ -321,7 +321,6 @@
 					let data = JSON.parse(JSON.stringify(this.currentData));
 					if (!data.id) {
 						this.axios.post("/health/", data).then((res) => {
-							console.log(data);
 							if (res.data.code === 0) {
 								this.$message({
 									type: "success",
